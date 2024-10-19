@@ -2,9 +2,8 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
     }
-    
     @SuppressWarnings("unchecked")
-    private void initComponents() {
+    private void initComponents() 
         jMenuItem11 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -34,10 +33,10 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(52, 122, 235));
+        jPanel1.setBackground(new java.awt.Color(52,122,235));
 
         jLabel2.setFont(new java.awt.Font("Impact", 1, 36)); 
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setForeground(new java.awt.Color(255,255,255));
         jLabel2.setText("Hospital Management System");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -133,6 +132,7 @@ public class Main extends javax.swing.JFrame {
         jMenu5.setFont(new java.awt.Font("Arial", 0, 18)); 
 
         jMenu7.setText("Add rooms");
+
         jMenuItem8.setText("Room");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,9 +140,11 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu7.add(jMenuItem8);
+
         jMenu5.add(jMenu7);
 
         jMenu8.setText("Admit");
+
         jMenuItem9.setText("Room");
         jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,9 +152,11 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu8.add(jMenuItem9);
+
         jMenu5.add(jMenu8);
 
         jMenu9.setText("Discharge");
+
         jMenuItem12.setText("Room");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -160,9 +164,11 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu9.add(jMenuItem12);
+
         jMenu5.add(jMenu9);
 
         jMenu6.setText("Billing");
+
         jMenuItem10.setText("Room");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,6 +176,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu6.add(jMenuItem10);
+
         jMenu5.add(jMenu6);
 
         jMenuBar1.add(jMenu5);
@@ -206,61 +213,81 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
-        ChangePassword ob1 = new ChangePassword();
-        ob1.setVisible(true);       
-    }
+    //GEN-FIRST:event_jMenuItem2ActionPerformed
+     ChangePassword ob1=new ChangePassword();
+     ob1.setVisible(true);       
+     }
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
-        NewUser ob1 = new NewUser();
-        ob1.setVisible(true);       
-    }
+    //GEN-FIRST:event_jMenuItem1ActionPerformed
+     NewUser ob1=new NewUser();
+     ob1.setVisible(true);
+   }
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-        Login ob1 = new Login();
-        ob1.setVisible(true);       
-    }
-
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {
-        PatientRegistration ob1 = new PatientRegistration();
-        ob1.setVisible(true);       
-    }
-
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {
-        PatientServices ob1 = new PatientServices();
-        ob1.setVisible(true);       
-    }
+    //GEN-FIRST:event_jMenuItem3ActionPerformed
+     LoginDetails ob1=new LoginDetails();
+     ob1.setVisible(true);       
+     }
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {
-        DoctorEntry ob1 = new DoctorEntry();
-        ob1.setVisible(true);       
-    }
-
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {
-        AddRoom ob1 = new AddRoom();
-        ob1.setVisible(true);       
-    }
-
-    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {
-        AdmitRoom ob1 = new AdmitRoom();
-        ob1.setVisible(true);       
-    }
-
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {
-        DischargeRoom ob1 = new DischargeRoom();
-        ob1.setVisible(true);       
-    }
-
-    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {
-        Billing ob1 = new Billing();
-        ob1.setVisible(true);       
-    }
+    //GEN-FIRST:event_jMenuItem4ActionPerformed
+    Entry ob1=new Entry();
+    ob1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {
-        About ob1 = new About();
-        ob1.setVisible(true);       
-    }
+    //GEN-FIRST:event_jMenuItem5ActionPerformed
+  About ob1=new About();
+  ob1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    public static void main(String args[]) {
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+    Registration ob1=new Registration();
+    ob1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+   Services ob1=new Services();
+   ob1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+  Room obj1=new Room();
+  obj1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+    Patient_Admit_Room obj1=new Patient_Admit_Room();
+    obj1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+   Bill_Room obj1=new Bill_Room();
+   obj1.setVisible(true);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+  Patient_Discharge_room obj1=new Patient_Discharge_room();
+  obj1.setVisible(true);
+    }
+    public static void main(String args[]){
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Main().setVisible(true);
@@ -268,9 +295,7 @@ public class Main extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -280,7 +305,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -289,8 +318,5 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JPanel jPanel1;
 }

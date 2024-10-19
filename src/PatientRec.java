@@ -3,29 +3,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
-
-public class DocRec extends javax.swing.JFrame {
+public class PatientRec extends javax.swing.JFrame {
 Connection con=null;
 ResultSet rs=null;
 PreparedStatement pst=null;
-    public DocRec() {
+    public PatientRec() {
         initComponents();
         con= Connect.ConnectDB();
         Get_Data();
     }
 private void Get_Data(){
-      String sql="select DoctorID as 'Doctor ID', DoctorName as 'Doctor Name',FatherName as 'Father Name',Address,ContacNo as 'Contact No',Email as 'Email ID',Qualifications,Gender,BloodGroup as 'Blood Group',DateOfJoining as 'Joining Date' from Doctor order by DoctorName";        
-      try{
-         pst=con.prepareStatement(sql);
-          rs= pst.executeQuery();
-         jTable1.setModel(DbUtils.resultSetToTableModel(rs));
-         }catch(Exception e){
+           String sql="select PatientID as 'Patient ID', PatientName as 'Patient Name',FatherName as 'Father Name',Address,ContactNo as 'Contact No',Email as 'Email ID',Age,Gen as 'Gender',BG as 'Blood Group',Remarks from Patientregistration";
+           try{
+                pst=con.prepareStatement(sql);
+                rs= pst.executeQuery();
+                jTable1.setModel(DbUtils.resultSetToTableModel(rs));
+            }catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
-          
-        }
+          }
     }
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -49,11 +46,11 @@ private void Get_Data(){
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
         );
 
         pack();
@@ -61,37 +58,38 @@ private void Get_Data(){
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {
     //GEN-FIRST:event_jTable1MouseClicked
-try{
+        try{
             con=Connect.ConnectDB();
             int row= jTable1.getSelectedRow();
             String table_click= jTable1.getModel().getValueAt(row, 0).toString();
-            String sql= "select * from Doctor where DoctorID = '" + table_click + "'";
+            String sql= "select * from PatientRegistration where PatientID = '" + table_click + "'";
             pst=con.prepareStatement(sql);
             rs=  pst.executeQuery();
             if(rs.next()){
                 this.hide();
-                Entry frm = new Entry();
+                Registration frm = new Registration();
                 frm.setVisible(true);
-                String add1=rs.getString("DoctorID");
+                String add1=rs.getString("PatientID");
                 frm.txtId.setText(add1);
-                String add2=rs.getString("Doctorname");
+                String add2=rs.getString("Patientname");
                 frm.txtName.setText(add2);
                 String add3=rs.getString("Fathername");
                 frm.txtFname.setText(add3);
                 String add5=rs.getString("Email");
-                frm.txtE.setText(add5);
-                String add6=rs.getString("Qualifications");
-                frm.txtQ.setText(add6);
-                String add9=rs.getString("BloodGroup");
-                frm.cmbB.setSelectedItem(add9);
-                String add11=rs.getString("Gender");
-                frm.cmbG.setSelectedItem(add11);
-                String add14=rs.getString("DateOfJoining");
-                frm.txtD.setText(add14);
+                frm.txtEmail.setText(add5);
+                int add6 = rs.getInt("Age");
+                String add= Integer.toString(add6);
+                frm.txtAge.setText(add);
+                String add7=rs.getString("Remarks");
+                frm.txtInfo.setText(add7);
+                String add9=rs.getString("BG");
+                frm.cmbBG.setSelectedItem(add9);
+                String add11=rs.getString("Gen");
+                frm.cmbGender.setSelectedItem(add11);
                 String add15=rs.getString("Address");
-                frm.txtAd.setText(add15);
-                String add16=rs.getString("ContacNo");
-                frm.txtC.setText(add16);
+                frm.txtAdd.setText(add15);
+                String add16=rs.getString("ContactNo");
+                frm.txtContact.setText(add16);
                 frm.btnUpdate.setEnabled(true);
                 frm.btnDelete.setEnabled(true);
                 frm.btnSave.setEnabled(false);
@@ -99,12 +97,12 @@ try{
             }
         }catch(Exception ex){
             JOptionPane.showMessageDialog(this,ex);
-        }      
+        }       
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-    }
 
+    }
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -114,18 +112,17 @@ try{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DocRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PatientRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DocRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PatientRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DocRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PatientRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DocRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PatientRec.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
-                new DocRec().setVisible(true);
+                new PatientRec().setVisible(true);
             }
         });
     }
