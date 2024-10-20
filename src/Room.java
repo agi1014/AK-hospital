@@ -1,6 +1,6 @@
 import java.sql.*;
 import javax.swing.*;
-import net.proteanit.sql.DbUtils;
+import javax.swing.table.DefaultTableModel;
 
 public class Room extends javax.swing.JFrame {
     Connection con = null;
@@ -20,10 +20,33 @@ public class Room extends javax.swing.JFrame {
         try {
             pst = con.prepareStatement(sql);
             rs = pst.executeQuery();
-            roomTable.setModel(DbUtils.resultSetToTableModel(rs));
+            roomTable.setModel(buildTableModel(rs));  // Use custom method to set the model
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    // Method to build DefaultTableModel from ResultSet
+    public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+
+        // Names of columns
+        int columnCount = metaData.getColumnCount();
+        String[] columnNames = new String[columnCount];
+        for (int i = 1; i <= columnCount; i++) {
+            columnNames[i - 1] = metaData.getColumnName(i);
+        }
+
+        // Data of the table
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        while (rs.next()) {
+            Object[] row = new Object[columnCount];
+            for (int i = 1; i <= columnCount; i++) {
+                row[i - 1] = rs.getObject(i);
+            }
+            model.addRow(row);
+        }
+        return model;
     }
 
     // GUI Components
@@ -89,7 +112,7 @@ public class Room extends javax.swing.JFrame {
         btnClear.setText("Clear");
         btnClear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                clearFields();
             }
         });
 
@@ -216,18 +239,12 @@ public class Room extends javax.swing.JFrame {
             if (rs.next()) {
                 txtRoomNo.setText(rs.getString("room_no"));
                 txtRoomCharges.setText(rs.getString("room_charges"));
-                btnEdit.setEnabled(true);
-                btnDelete.setEnabled(true);
+                btnEdit.setEnabled(true);  // Enable Edit button
+                btnDelete.setEnabled(true);  // Enable Delete button
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-    }
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new Room().setVisible(true);
-        });
     }
 
     // Variables declaration
@@ -241,4 +258,5 @@ public class Room extends javax.swing.JFrame {
     private javax.swing.JTable roomTable;
     private javax.swing.JTextField txtRoomCharges;
     private javax.swing.JTextField txtRoomNo;
+    // End of variables declaration
 }

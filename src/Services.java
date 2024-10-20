@@ -1,6 +1,6 @@
 import java.sql.*;
 import javax.swing.*;
-import net.proteanit.sql.DbUtils;
+import javax.swing.table.DefaultTableModel;
 
 public class Services extends javax.swing.JFrame {
     Connection con = null;
@@ -16,15 +16,38 @@ public class Services extends javax.swing.JFrame {
 
     // Method to fetch and display service data
     private void Get_Data() {
-        String sql = "SELECT service_id AS 'Service ID', service_name AS 'Service Name', service_charges AS 'Service Charges', "
-                   + "service_date AS 'Service Date', patient_id AS 'Patient ID' FROM services";
+        String sql = "SELECT service_id, service_name, service_charges, service_date, patient_id FROM services";
         try {
             pst = con.prepareStatement(sql);
             rs = pst.executeQuery();
-            servicesTable.setModel(DbUtils.resultSetToTableModel(rs));
+            // Method to populate table without DbUtils
+            servicesTable.setModel(buildTableModel(rs));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    // Method to build a TableModel from ResultSet
+    public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+
+        // Get column names
+        int columnCount = metaData.getColumnCount();
+        String[] columnNames = new String[columnCount];
+        for (int column = 1; column <= columnCount; column++) {
+            columnNames[column - 1] = metaData.getColumnName(column);
+        }
+
+        // Get rows
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        while (rs.next()) {
+            Object[] row = new Object[columnCount];
+            for (int i = 1; i <= columnCount; i++) {
+                row[i - 1] = rs.getObject(i);
+            }
+            tableModel.addRow(row);
+        }
+        return tableModel;
     }
 
     // GUI Components
@@ -102,7 +125,7 @@ public class Services extends javax.swing.JFrame {
         btnClear.setText("Clear");
         btnClear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                clearFields();
             }
         });
 
@@ -196,11 +219,19 @@ public class Services extends javax.swing.JFrame {
         }
     }
 
+    // Clear Input Fields
+    private void clearFields() {
+        txtServiceID.setText("");
+        txtServiceName.setText("");
+        txtServiceCharges.setText("");
+        txtServiceDate.setText("");
+        txtPatientID.setText("");
+    }
+
     // Edit Service
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String sql = "UPDATE services SET service_name = ?, service_charges = ?, service_date = ?, patient_id = ? "
-                       + "WHERE service_id = ?";
+            String sql = "UPDATE services SET service_name = ?, service_charges = ?, service_date = ?, patient_id = ? WHERE service_id = ?";
             pst = con.prepareStatement(sql);
             pst.setString(1, txtServiceName.getText());
             pst.setString(2, txtServiceCharges.getText());
@@ -231,47 +262,26 @@ public class Services extends javax.swing.JFrame {
         }
     }
 
-    // Clear Input Fields
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {
-        clearFields();
-    }
-
-    // Method to clear all fields
-    private void clearFields() {
-        txtServiceID.setText("");
-        txtServiceName.setText("");
-        txtServiceCharges.setText("");
-        txtServiceDate.setText("");
-        txtPatientID.setText("");
-        btnEdit.setEnabled(false);
-        btnDelete.setEnabled(false);
-    }
-
-    // When a row is clicked, load data into the fields
+    // Populate fields when a row is clicked
     private void servicesTableMouseClicked(java.awt.event.MouseEvent evt) {
         int row = servicesTable.getSelectedRow();
-        String serviceID = servicesTable.getModel().getValueAt(row, 0).toString();
-        String sql = "SELECT * FROM services WHERE service_id = '" + serviceID + "'";
-        try {
-            pst = con.prepareStatement(sql);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                txtServiceID.setText(rs.getString("service_id"));
-                txtServiceName.setText(rs.getString("service_name"));
-                txtServiceCharges.setText(rs.getString("service_charges"));
-                txtServiceDate.setText(rs.getString("service_date"));
-                txtPatientID.setText(rs.getString("patient_id"));
-                btnEdit.setEnabled(true);
-                btnDelete.setEnabled(true);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
+        txtServiceID.setText(servicesTable.getModel().getValueAt(row, 0).toString());
+        txtServiceName.setText(servicesTable.getModel().getValueAt(row, 1).toString());
+        txtServiceCharges.setText(servicesTable.getModel().getValueAt(row, 2).toString());
+        txtServiceDate.setText(servicesTable.getModel().getValueAt(row, 3).toString());
+        txtPatientID.setText(servicesTable.getModel().getValueAt(row, 4).toString());
+
+        // Enable Edit/Delete buttons when a record is selected
+        btnEdit.setEnabled(true);
+        btnDelete.setEnabled(true);
     }
 
+    // Main method
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new Services().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Services().setVisible(true);
+            }
         });
     }
 

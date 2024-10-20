@@ -1,6 +1,6 @@
 import java.sql.*;
 import javax.swing.*;
-import net.proteanit.sql.DbUtils;
+import javax.swing.table.DefaultTableModel;
 
 public class Doctor extends javax.swing.JFrame {
     Connection con = null;
@@ -21,11 +21,34 @@ public class Doctor extends javax.swing.JFrame {
         try {
             pst = con.prepareStatement(sql);
             rs = pst.executeQuery();
-            doctorTable.setModel(DbUtils.resultSetToTableModel(rs));
+            doctorTable.setModel(buildTableModel(rs));  // Set the custom table model
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error Fetching Data: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    // Method to build a DefaultTableModel from a ResultSet
+    public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+
+        // Names of columns
+        int columnCount = metaData.getColumnCount();
+        String[] columnNames = new String[columnCount];
+        for (int i = 1; i <= columnCount; i++) {
+            columnNames[i - 1] = metaData.getColumnName(i);
+        }
+
+        // Data of the table
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        while (rs.next()) {
+            Object[] row = new Object[columnCount];
+            for (int i = 1; i <= columnCount; i++) {
+                row[i - 1] = rs.getObject(i);
+            }
+            model.addRow(row);
+        }
+        return model;
     }
 
     // GUI Components
@@ -178,20 +201,19 @@ public class Doctor extends javax.swing.JFrame {
             pst.setString(4, txtContactNo.getText());
             pst.setString(5, txtAddress.getText());
             pst.setString(6, txtDateJoining.getText());
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Doctor Added Successfully");
-            Get_Data();  // Refresh table data
-            clearFields();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Doctor Added Successfully!");
+            Get_Data();  // Refresh the table data
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error Adding Doctor: " + e.getMessage());
         }
     }
 
     // Edit Doctor
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String sql = "UPDATE doctors SET doctor_name = ?, father_name = ?, contact_no = ?, address = ?, "
-                       + "date_joining = ? WHERE doctor_id = ?";
+            String sql = "UPDATE doctors SET doctor_name=?, father_name=?, contact_no=?, address=?, date_joining=? "
+                       + "WHERE doctor_id=?";
             pst = con.prepareStatement(sql);
             pst.setString(1, txtDoctorName.getText());
             pst.setString(2, txtFatherName.getText());
@@ -199,59 +221,50 @@ public class Doctor extends javax.swing.JFrame {
             pst.setString(4, txtAddress.getText());
             pst.setString(5, txtDateJoining.getText());
             pst.setString(6, txtDoctorID.getText());
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Doctor Updated Successfully");
-            Get_Data();  // Refresh table data
-            clearFields();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Doctor Updated Successfully!");
+            Get_Data();  // Refresh the table data
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error Updating Doctor: " + e.getMessage());
         }
     }
 
     // Delete Doctor
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String sql = "DELETE FROM doctors WHERE doctor_id = ?";
+            String sql = "DELETE FROM doctors WHERE doctor_id=?";
             pst = con.prepareStatement(sql);
             pst.setString(1, txtDoctorID.getText());
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Doctor Deleted Successfully");
-            Get_Data();  // Refresh table data
-            clearFields();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Doctor Deleted Successfully!");
+            Get_Data();  // Refresh the table data
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error Deleting Doctor: " + e.getMessage());
         }
     }
 
     // Clear Fields
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {
-        clearFields();
-    }
-
-    private void clearFields() {
         txtDoctorID.setText("");
         txtDoctorName.setText("");
         txtFatherName.setText("");
         txtContactNo.setText("");
         txtAddress.setText("");
         txtDateJoining.setText("");
-        btnEdit.setEnabled(false);
-        btnDelete.setEnabled(false);
     }
 
-    // Handle Table Row Click
+    // Handle table row selection to enable Edit/Delete buttons
     private void doctorTableMouseClicked(java.awt.event.MouseEvent evt) {
-        int row = doctorTable.getSelectedRow();
-        if (row != -1) {
-            txtDoctorID.setText(doctorTable.getValueAt(row, 0).toString());
-            txtDoctorName.setText(doctorTable.getValueAt(row, 1).toString());
-            txtFatherName.setText(doctorTable.getValueAt(row, 2).toString());
-            txtContactNo.setText(doctorTable.getValueAt(row, 3).toString());
-            txtAddress.setText(doctorTable.getValueAt(row, 4).toString());
-            txtDateJoining.setText(doctorTable.getValueAt(row, 5).toString());
-            btnEdit.setEnabled(true);
-            btnDelete.setEnabled(true);
-        }
+        int selectedRow = doctorTable.getSelectedRow();
+        txtDoctorID.setText(doctorTable.getValueAt(selectedRow, 0).toString());
+        txtDoctorName.setText(doctorTable.getValueAt(selectedRow, 1).toString());
+        txtFatherName.setText(doctorTable.getValueAt(selectedRow, 2).toString());
+        txtContactNo.setText(doctorTable.getValueAt(selectedRow, 3).toString());
+        txtAddress.setText(doctorTable.getValueAt(selectedRow, 4).toString());
+        txtDateJoining.setText(doctorTable.getValueAt(selectedRow, 5).toString());
+
+        btnEdit.setEnabled(true);  // Enable Edit button when a row is selected
+        btnDelete.setEnabled(true);  // Enable Delete button when a row is selected
     }
 
     public static void main(String args[]) {
@@ -260,19 +273,19 @@ public class Doctor extends javax.swing.JFrame {
         });
     }
 
-    // GUI Components Declaration
+    // Variables declaration
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JTable doctorTable;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtContactNo;
     private javax.swing.JTextField txtDateJoining;
