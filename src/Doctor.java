@@ -2,109 +2,93 @@ import java.sql.*;
 import javax.swing.*;
 import net.proteanit.sql.DbUtils;
 
-public class Services extends javax.swing.JFrame {
+public class Doctor extends javax.swing.JFrame {
     Connection con = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
 
     // Constructor
-    public Services() {
+    public Doctor() {
         initComponents();
         con = Connect.ConnectDB();  // Establish database connection
         Get_Data();  // Load data into the table
     }
 
-    // Method to fetch and display service data
+    // Method to fetch and display doctor data
     private void Get_Data() {
-        String sql = "SELECT service_id AS 'Service ID', service_name AS 'Service Name', service_charges AS 'Service Charges', "
-                   + "service_date AS 'Service Date', patient_id AS 'Patient ID' FROM services";
+        String sql = "SELECT doctor_id AS 'Doctor ID', doctor_name AS 'Doctor Name', father_name AS 'Father Name', "
+                   + "contact_no AS 'Contact No', address AS 'Address', date_joining AS 'Date of Joining' FROM doctors";
         try {
             pst = con.prepareStatement(sql);
             rs = pst.executeQuery();
-            servicesTable.setModel(DbUtils.resultSetToTableModel(rs));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            doctorTable.setModel(DbUtils.resultSetToTableModel(rs));
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error Fetching Data: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     // GUI Components
     private void initComponents() {
         jScrollPane1 = new javax.swing.JScrollPane();
-        servicesTable = new javax.swing.JTable();
+        doctorTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        txtServiceID = new javax.swing.JTextField();
+        txtDoctorID = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtServiceName = new javax.swing.JTextField();
+        txtDoctorName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtServiceCharges = new javax.swing.JTextField();
+        txtFatherName = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtServiceDate = new javax.swing.JTextField();
+        txtContactNo = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtPatientID = new javax.swing.JTextField();
+        txtAddress = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtDateJoining = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Service Management");
+        setTitle("Doctor Registration");
 
-        servicesTable.setModel(new javax.swing.table.DefaultTableModel(
+        doctorTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {},
             new String [] {
-                "Service ID", "Service Name", "Service Charges", "Service Date", "Patient ID"
+                "Doctor ID", "Doctor Name", "Father Name", "Contact No", "Address", "Date of Joining"
             }
         ));
-        servicesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        doctorTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                servicesTableMouseClicked(evt);
+                doctorTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(servicesTable);
+        jScrollPane1.setViewportView(doctorTable);
 
-        jLabel1.setText("Service ID:");
+        jLabel1.setText("Doctor ID:");
+        jLabel2.setText("Doctor Name:");
+        jLabel3.setText("Father Name:");
+        jLabel4.setText("Contact No:");
+        jLabel5.setText("Address:");
+        jLabel6.setText("Date of Joining:");
 
-        jLabel2.setText("Service Name:");
-
-        jLabel3.setText("Service Charges:");
-
-        jLabel4.setText("Service Date (YYYY-MM-DD):");
-
-        jLabel5.setText("Patient ID:");
-
-        // Add Service Button
+        // Add Doctor Button
         btnAdd.setText("Add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
+        btnAdd.addActionListener(evt -> btnAddActionPerformed(evt));
 
-        // Edit Service Button
+        // Edit Doctor Button
         btnEdit.setText("Edit");
         btnEdit.setEnabled(false);  // Disable until a record is selected
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
-            }
-        });
+        btnEdit.addActionListener(evt -> btnEditActionPerformed(evt));
 
-        // Delete Service Button
+        // Delete Doctor Button
         btnDelete.setText("Delete");
         btnDelete.setEnabled(false);  // Disable until a record is selected
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
+        btnDelete.addActionListener(evt -> btnDeleteActionPerformed(evt));
 
         // Clear Fields Button
         btnClear.setText("Clear");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
-            }
-        });
+        btnClear.addActionListener(evt -> btnClearActionPerformed(evt));
 
         // Layout for the components
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -121,14 +105,16 @@ public class Services extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtServiceID)
-                            .addComponent(txtServiceName)
-                            .addComponent(txtServiceCharges)
-                            .addComponent(txtServiceDate)
-                            .addComponent(txtPatientID)))
+                            .addComponent(txtDoctorID)
+                            .addComponent(txtDoctorName)
+                            .addComponent(txtFatherName)
+                            .addComponent(txtContactNo)
+                            .addComponent(txtAddress)
+                            .addComponent(txtDateJoining)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -147,23 +133,27 @@ public class Services extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtServiceID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDoctorID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtServiceName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDoctorName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtServiceCharges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFatherName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtServiceDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtContactNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtPatientID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtDateJoining, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
@@ -176,120 +166,117 @@ public class Services extends javax.swing.JFrame {
         pack();
     }
 
-    // Add Service
+    // Add Doctor
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String sql = "INSERT INTO services (service_id, service_name, service_charges, service_date, patient_id) "
-                       + "VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO doctors (doctor_id, doctor_name, father_name, contact_no, address, date_joining) "
+                       + "VALUES (?, ?, ?, ?, ?, ?)";
             pst = con.prepareStatement(sql);
-            pst.setString(1, txtServiceID.getText());
-            pst.setString(2, txtServiceName.getText());
-            pst.setString(3, txtServiceCharges.getText());
-            pst.setString(4, txtServiceDate.getText());
-            pst.setString(5, txtPatientID.getText());
+            pst.setString(1, txtDoctorID.getText());
+            pst.setString(2, txtDoctorName.getText());
+            pst.setString(3, txtFatherName.getText());
+            pst.setString(4, txtContactNo.getText());
+            pst.setString(5, txtAddress.getText());
+            pst.setString(6, txtDateJoining.getText());
             pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Service Added Successfully");
+            JOptionPane.showMessageDialog(null, "Doctor Added Successfully");
             Get_Data();  // Refresh table data
             clearFields();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
     }
 
-    // Edit Service
+    // Edit Doctor
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String sql = "UPDATE services SET service_name = ?, service_charges = ?, service_date = ?, patient_id = ? "
-                       + "WHERE service_id = ?";
+            String sql = "UPDATE doctors SET doctor_name = ?, father_name = ?, contact_no = ?, address = ?, "
+                       + "date_joining = ? WHERE doctor_id = ?";
             pst = con.prepareStatement(sql);
-            pst.setString(1, txtServiceName.getText());
-            pst.setString(2, txtServiceCharges.getText());
-            pst.setString(3, txtServiceDate.getText());
-            pst.setString(4, txtPatientID.getText());
-            pst.setString(5, txtServiceID.getText());
+            pst.setString(1, txtDoctorName.getText());
+            pst.setString(2, txtFatherName.getText());
+            pst.setString(3, txtContactNo.getText());
+            pst.setString(4, txtAddress.getText());
+            pst.setString(5, txtDateJoining.getText());
+            pst.setString(6, txtDoctorID.getText());
             pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Service Updated Successfully");
+            JOptionPane.showMessageDialog(null, "Doctor Updated Successfully");
             Get_Data();  // Refresh table data
             clearFields();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
     }
 
-    // Delete Service
+    // Delete Doctor
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String sql = "DELETE FROM services WHERE service_id = ?";
+            String sql = "DELETE FROM doctors WHERE doctor_id = ?";
             pst = con.prepareStatement(sql);
-            pst.setString(1, txtServiceID.getText());
+            pst.setString(1, txtDoctorID.getText());
             pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Service Deleted Successfully");
+            JOptionPane.showMessageDialog(null, "Doctor Deleted Successfully");
             Get_Data();  // Refresh table data
             clearFields();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
     }
 
-    // Clear Input Fields
+    // Clear Fields
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {
         clearFields();
     }
 
-    // Method to clear all fields
     private void clearFields() {
-        txtServiceID.setText("");
-        txtServiceName.setText("");
-        txtServiceCharges.setText("");
-        txtServiceDate.setText("");
-        txtPatientID.setText("");
+        txtDoctorID.setText("");
+        txtDoctorName.setText("");
+        txtFatherName.setText("");
+        txtContactNo.setText("");
+        txtAddress.setText("");
+        txtDateJoining.setText("");
         btnEdit.setEnabled(false);
         btnDelete.setEnabled(false);
     }
 
-    // When a row is clicked, load data into the fields
-    private void servicesTableMouseClicked(java.awt.event.MouseEvent evt) {
-        int row = servicesTable.getSelectedRow();
-        String serviceID = servicesTable.getModel().getValueAt(row, 0).toString();
-        String sql = "SELECT * FROM services WHERE service_id = '" + serviceID + "'";
-        try {
-            pst = con.prepareStatement(sql);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                txtServiceID.setText(rs.getString("service_id"));
-                txtServiceName.setText(rs.getString("service_name"));
-                txtServiceCharges.setText(rs.getString("service_charges"));
-                txtServiceDate.setText(rs.getString("service_date"));
-                txtPatientID.setText(rs.getString("patient_id"));
-                btnEdit.setEnabled(true);
-                btnDelete.setEnabled(true);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+    // Handle Table Row Click
+    private void doctorTableMouseClicked(java.awt.event.MouseEvent evt) {
+        int row = doctorTable.getSelectedRow();
+        if (row != -1) {
+            txtDoctorID.setText(doctorTable.getValueAt(row, 0).toString());
+            txtDoctorName.setText(doctorTable.getValueAt(row, 1).toString());
+            txtFatherName.setText(doctorTable.getValueAt(row, 2).toString());
+            txtContactNo.setText(doctorTable.getValueAt(row, 3).toString());
+            txtAddress.setText(doctorTable.getValueAt(row, 4).toString());
+            txtDateJoining.setText(doctorTable.getValueAt(row, 5).toString());
+            btnEdit.setEnabled(true);
+            btnDelete.setEnabled(true);
         }
     }
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
-            new Services().setVisible(true);
+            new Doctor().setVisible(true);
         });
     }
 
-    // Variables declaration
+    // GUI Components Declaration
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
+    private javax.swing.JTable doctorTable;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable servicesTable;
-    private javax.swing.JTextField txtPatientID;
-    private javax.swing.JTextField txtServiceCharges;
-    private javax.swing.JTextField txtServiceDate;
-    private javax.swing.JTextField txtServiceID;
-    private javax.swing.JTextField txtServiceName;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextField txtContactNo;
+    private javax.swing.JTextField txtDateJoining;
+    private javax.swing.JTextField txtDoctorID;
+    private javax.swing.JTextField txtDoctorName;
+    private javax.swing.JTextField txtFatherName;
 }

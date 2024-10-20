@@ -1,156 +1,244 @@
-import java.awt.HeadlessException;
-import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.swing.JOptionPane;
+import java.sql.*;
+import javax.swing.*;
 import net.proteanit.sql.DbUtils;
 
 public class Room extends javax.swing.JFrame {
-Connection con=null;
-ResultSet rs=null;
-PreparedStatement pst=null;
+    Connection con = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
+    // Constructor
     public Room() {
         initComponents();
-        con= Connect.ConnectDB();
-        Get_Data();
-        setLocationRelativeTo(null);
+        con = Connect.ConnectDB();  // Establish database connection
+        Get_Data();  // Load data into the table
     }
-private void Reset()
-{
-    txtRoomNo.setText("");
-    txtRoomCharges.setText("");
-    cmbRoomType.setSelectedIndex(-1);
-    btnSave.setEnabled(true);
-    btnDelete.setEnabled(false);
-    btnUpdate.setEnabled(false);
-    txtRoomNo.requestDefaultFocus();
-    Get_Data();
-}
-  private void Get_Data(){
-     String sql="select RoomNo as 'Room No.',RoomType as 'Room Type', RoomCharges as 'Room Charges',RoomStatus as 'Room Status' from Room";
-     try{
-         pst=con.prepareStatement(sql);
-          rs= pst.executeQuery();
-         Room_table.setModel(DbUtils.resultSetToTableModel(rs));
-         }catch(Exception e){
+
+    // Method to fetch and display room data
+    private void Get_Data() {
+        String sql = "SELECT room_no AS 'Room No', room_charges AS 'Room Charges' FROM room";
+        try {
+            pst = con.prepareStatement(sql);
+            rs = pst.executeQuery();
+            roomTable.setModel(DbUtils.resultSetToTableModel(rs));
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
-          
-}}
-    
-    @SuppressWarnings("unchecked")
+        }
+    }
+
+    // GUI Components
     private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtRoomNo = new javax.swing.JTextField();
-        cmbRoomType = new javax.swing.JComboBox();
-        txtRoomCharges = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        btnNew = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
-        btnGetData = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        Room_table = new javax.swing.JTable();
+        roomTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        txtRoomNo = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        txtRoomCharges = new javax.swing.JTextField();
+        btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Room Info"));
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Room Management");
 
-        jLabel1.setText("Room No.");
+        roomTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {
+                "Room No", "Room Charges"
+            }
+        ));
+        roomTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                roomTableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(roomTable);
 
-        jLabel2.setText("Room Type");
+        jLabel1.setText("Room No:");
 
-        jLabel3.setText("Room Charges");
+        jLabel2.setText("Room Charges:");
 
-        cmbRoomType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "General", "Deluxe" }));
-        cmbRoomType.setSelectedIndex(-1);
-
-        txtRoomCharges.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtRoomChargesKeyTyped(evt);
+        // Add Room Button
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
             }
         });
 
- 
-    private void txtRoomChargesKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRoomChargesKeyTyped
-        
+        // Edit Room Button
+        btnEdit.setText("Edit");
+        btnEdit.setEnabled(false);  // Disable until a record is selected
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        // Delete Room Button
+        btnDelete.setText("Delete");
+        btnDelete.setEnabled(false);  // Disable until a record is selected
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        // Clear Fields Button
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        // Layout for the components
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtRoomNo)
+                            .addComponent(txtRoomCharges)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnClear)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtRoomNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtRoomCharges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAdd)
+                    .addComponent(btnEdit)
+                    .addComponent(btnDelete)
+                    .addComponent(btnClear))
+                .addContainerGap())
+        );
+
+        pack();
     }
-    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        Reset();
-    }
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try{
-            con=Connect.ConnectDB();
-            if (txtRoomNo.getText().equals("")) {
-                JOptionPane.showMessageDialog( this, "Please enter room no.","Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (cmbRoomType.getSelectedItem().equals("")) {
-                JOptionPane.showMessageDialog( this, "Please select room type","Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (txtRoomCharges.getText().equals("")) {
-                JOptionPane.showMessageDialog( this, "Please enter room Charges","Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
 
-            Statement stmt;
-            stmt= con.createStatement();
-            String sql1="Select RoomNo from Room where RoomNo= '" + txtRoomNo.getText() + "'";
-            rs=stmt.executeQuery(sql1);
-            if(rs.next()){
-                JOptionPane.showMessageDialog( this, "Room No. already exists","Error", JOptionPane.ERROR_MESSAGE);
-                txtRoomNo.setText("");
-                txtRoomNo.requestDefaultFocus();
-                return;
-            }
-
-            String sql= "insert into Room(RoomNo,RoomType,RoomCharges,RoomStatus)values('"+ txtRoomNo.getText() + "','"+ cmbRoomType.getSelectedItem() + "'," + txtRoomCharges.getText() + ",'Vacant')";
-            pst=con.prepareStatement(sql);
-            pst.execute();
-
-            JOptionPane.showMessageDialog(this,"Successfully saved","Room Record",JOptionPane.INFORMATION_MESSAGE);
-            btnSave.setEnabled(false);
-            Get_Data();
-        }catch(HeadlessException | SQLException ex){
-            JOptionPane.showMessageDialog(this,ex);
+    // Add Room
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            String sql = "INSERT INTO room (room_no, room_charges) VALUES (?, ?)";
+            pst = con.prepareStatement(sql);
+            pst.setString(1, txtRoomNo.getText());
+            pst.setString(2, txtRoomCharges.getText());
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Room Added Successfully");
+            Get_Data();  // Refresh table data
+            clearFields();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {
-    //GEN-FIRST:event_btnUpdateActionPerformed
-        try{
-            con=Connect.ConnectDB();
-            String sql= "update Room set Roomtype='"+ cmbRoomType.getSelectedItem() + "',RoomCharges=" + txtRoomCharges.getText() + " where RoomNo='" + txtRoomNo.getText() + "'";
-            pst=con.prepareStatement(sql);
-            pst.execute();
-            JOptionPane.showMessageDialog(this,"Successfully updated","Room Record",JOptionPane.INFORMATION_MESSAGE);
-            btnUpdate.setEnabled(false);
-            Get_Data();
-        }catch(HeadlessException | SQLException ex){
-            JOptionPane.showMessageDialog(this,ex);
+
+    // Edit Room
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            String sql = "UPDATE room SET room_charges = ? WHERE room_no = ?";
+            pst = con.prepareStatement(sql);
+            pst.setString(1, txtRoomCharges.getText());
+            pst.setString(2, txtRoomNo.getText());
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Room Updated Successfully");
+            Get_Data();  // Refresh table data
+            clearFields();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try
-        {
-            int P = JOptionPane.showConfirmDialog(null," Are you sure want to delete ?","Confirmation",JOptionPane.YES_NO_OPTION);
-            if (P==0)
-            {
-                con=Connect.ConnectDB();
 
-                String sql= "delete from Room where RoomNo = '" + txtRoomNo.getText() + "'";
-                pst=con.prepareStatement(sql);
-                pst.execute();
-                JOptionPane.showMessageDialog(this,"Successfully deleted","Record",JOptionPane.INFORMATION_MESSAGE);
-                Reset();
-            }
-        }catch(HeadlessException | SQLException ex){
-            JOptionPane.showMessageDialog(this,ex);
+    // Delete Room
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            String sql = "DELETE FROM room WHERE room_no = ?";
+            pst = con.prepareStatement(sql);
+            pst.setString(1, txtRoomNo.getText());
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Room Deleted Successfully");
+            Get_Data();  // Refresh table data
+            clearFields();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    // Clear Input Fields
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {
+        clearFields();
+    }
+
+    // Method to clear all fields
+    private void clearFields() {
+        txtRoomNo.setText("");
+        txtRoomCharges.setText("");
+        btnEdit.setEnabled(false);
+        btnDelete.setEnabled(false);
+    }
+
+    // When a row is clicked, load data into the fields
+    private void roomTableMouseClicked(java.awt.event.MouseEvent evt) {
+        int row = roomTable.getSelectedRow();
+        String roomNo = roomTable.getModel().getValueAt(row, 0).toString();
+        String sql = "SELECT * FROM room WHERE room_no = '" + roomNo + "'";
+        try {
+            pst = con.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                txtRoomNo.setText(rs.getString("room_no"));
+                txtRoomCharges.setText(rs.getString("room_charges"));
+                btnEdit.setEnabled(true);
+                btnDelete.setEnabled(true);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(() -> {
+            new Room().setVisible(true);
+        });
+    }
+
+    // Variables declaration
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable roomTable;
+    private javax.swing.JTextField txtRoomCharges;
+    private javax.swing.JTextField txtRoomNo;
 }
